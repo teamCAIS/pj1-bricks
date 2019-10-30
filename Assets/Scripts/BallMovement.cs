@@ -11,6 +11,10 @@ public class BallMovement : MonoBehaviour {
 	private Vector2 initialPosition = new Vector2(0.0f,-4.3f);
 	public AudioClip clip;
 	public AudioSource source;
+	public GameObject heart1;
+	public GameObject heart2;
+	public GameObject heart3;
+	public GameObject bricksContainer;
 
 	private int lifes = 3;
 
@@ -28,6 +32,9 @@ public class BallMovement : MonoBehaviour {
 		if(this.lifes <= 0) {
 			SceneManager.LoadScene("GameOverScene");
 		}
+		if(this.bricksContainer.transform.childCount <= 0){
+			SceneManager.LoadScene("GameOverScene");
+		}
 	}
 
 	void OnTriggerExit2D()
@@ -36,7 +43,21 @@ public class BallMovement : MonoBehaviour {
         transform.position = this.initialPosition;
         this.rb2d.velocity = Vector2.zero;
 				this.lifes--;
-				Debug.Log(this.lifes);
+				if(this.lifes == 2){
+					this.heart3.SetActive(false);
+				}
+				switch (this.lifes)
+				{
+						case 2:
+							this.heart3.SetActive(false);
+							break;
+						case 1:
+							this.heart2.SetActive(false);
+							break;
+						case 0:
+							this.heart1.SetActive(false);
+							break;
+				}
     }
 	
 	void FixedUpdate () {
@@ -46,7 +67,7 @@ public class BallMovement : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D col){
 		source.Play();
 		if(col.gameObject.CompareTag("Brick")){
-			col.gameObject.SetActive(false);
+			Destroy(col.gameObject);
 		}
 	}
 
